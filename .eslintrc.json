@@ -22,6 +22,10 @@
         "lines-between-class-members": "off",
         "no-unused-vars": "off",
         "class-methods-use-this": "off",
-        "max-classes-per-file": "off"
+        "max-classes-per-file": "off",
+        "import/extensions": "off",
+        "no-use-before-define": "off",
+        "no-underscore-dangle": "off",
+        "no-param-reassign": "off"
     }
 }

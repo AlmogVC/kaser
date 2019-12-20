@@ -13,7 +13,7 @@ const serviceSchema: mongoose.Schema = new mongoose.Schema(
             type: Date,
             required: true,
         },
-        longestSilentPeriodInSeconds: {
+        longestDeadPeriodInSeconds: {
             type: Number,
             required: true,
             default: 0,

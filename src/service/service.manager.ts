@@ -12,40 +12,51 @@ export default class ServiceManager {
             return ServiceManager.create(aliveSignal);
         }
 
-        return ServiceRepository.update(
-            aliveSignal.serviceName,
-            ServiceManager.updateServiceTimes(service, aliveSignal),
-        );
+        return ServiceRepository.update(aliveSignal.serviceName, ServiceManager.updateServiceTimes(service));
     }
 
-    private static updateServiceTimes(service: IService, aliveSignal: IAliveSignal): IService {
-        const currentAlivePeriodInSeconds: number = ServiceManager.getCurrentAlivePeriod(service, aliveSignal);
-
-        const lastContactDateInSeconds: number = getTimeInSeconds(service.lastContactDate);
+    private static updateServiceTimes(service: IService): IService {
         const currentDateInSeconds: number = getTimeInSeconds(new Date());
+        const currentAlivePeriodInSeconds: number = ServiceManager.getCurrentAlivePeriod(service, currentDateInSeconds);
 
-        const currentSilentPeriodInSeconds: number =
-            currentDateInSeconds - (lastContactDateInSeconds + currentAlivePeriodInSeconds);
+        const currentSilentPeriodInSeconds: number = ServiceManager.getCurrentSilentPeriod(
+            service.lastContactDate,
+            currentAlivePeriodInSeconds,
+            currentDateInSeconds,
+        );
+
+        let { longestDeadPeriodInSeconds } = service;
+
+        if (currentAlivePeriodInSeconds === 0) {
+            longestDeadPeriodInSeconds = Math.max(currentSilentPeriodInSeconds, longestDeadPeriodInSeconds);
+        }
 
         return {
             name: service.name,
             lastContactDate: new Date(),
             currentAlivePeriodInSeconds,
             longestAlivePeriodInSeconds: Math.max(currentAlivePeriodInSeconds, service.longestAlivePeriodInSeconds),
-            longestSilentPeriodInSeconds: Math.max(currentSilentPeriodInSeconds, service.longestSilentPeriodInSeconds),
+            longestDeadPeriodInSeconds,
         };
     }
 
-    private static getCurrentAlivePeriod(service: IService, aliveSignal: IAliveSignal): number {
-        const currentDateInSeconds: number = getTimeInSeconds(new Date());
-        const lastContactInSeconds: number = getTimeInSeconds(service.lastContactDate);
+    private static getCurrentSilentPeriod(
+        lastContactDate: Date,
+        currentAlivePeriodInSeconds: number,
+        currentDateInSeconds: number,
+    ) {
+        return currentDateInSeconds - (getTimeInSeconds(lastContactDate) + currentAlivePeriodInSeconds);
+    }
+
+    private static getCurrentAlivePeriod(service: IService, currentDateInSeconds: number): number {
+        const lastContactDateInSeconds: number = getTimeInSeconds(service.lastContactDate);
 
         const wasServiceDead: boolean =
-            lastContactInSeconds + config.service.maxSilenceTimeInSeconds < currentDateInSeconds;
+            lastContactDateInSeconds + config.service.maxSilenceTimeInSeconds < currentDateInSeconds;
 
         if (wasServiceDead) return 0;
 
-        return service.currentAlivePeriodInSeconds + (currentDateInSeconds - lastContactInSeconds);
+        return service.currentAlivePeriodInSeconds + (currentDateInSeconds - lastContactDateInSeconds);
     }
 
     private static create(aliveSignal: IAliveSignal) {
@@ -54,7 +65,7 @@ export default class ServiceManager {
             lastContactDate: new Date(),
             currentAlivePeriodInSeconds: 0,
             longestAlivePeriodInSeconds: 0,
-            longestSilentPeriodInSeconds: 0,
+            longestDeadPeriodInSeconds: 0,
         });
     }
 }

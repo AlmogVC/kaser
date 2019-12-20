@@ -3,7 +3,7 @@ export default interface IService {
     name: string;
     createdAt?: Date;
     lastContactDate: Date;
-    longestSilentPeriodInSeconds: number;
+    longestDeadPeriodInSeconds: number;
     longestAlivePeriodInSeconds: number;
     currentAlivePeriodInSeconds: number;
 }

@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
-import IHostService from './hostService.interface';
+import IHostService from './serviceHost.interface';
 import config from '../config';
 
-const hostServiceSchema: mongoose.Schema = new mongoose.Schema(
+const serviceHostSchema: mongoose.Schema = new mongoose.Schema(
     {
         service: {
             type: String,
@@ -16,6 +16,10 @@ const hostServiceSchema: mongoose.Schema = new mongoose.Schema(
             type: Date,
             default: new Date(),
             expires: config.hostService.expirationTimeInSeconds,
+        },
+        upTimeInSeconds: {
+            type: Number,
+            default: 0,
         },
     },
     {
@@ -32,7 +36,7 @@ const hostServiceSchema: mongoose.Schema = new mongoose.Schema(
     },
 );
 
-hostServiceSchema.index({ serviceName: 1, hostname: -1 });
-const HostServiceModel = mongoose.model<IHostService & mongoose.Document>('HostService', hostServiceSchema);
+serviceHostSchema.index({ serviceName: 1, hostname: -1 });
+const ServiceHostModel = mongoose.model<IHostService & mongoose.Document>('ServiceHost', serviceHostSchema);
 
-export default HostServiceModel;
+export default ServiceHostModel;

@@ -10,6 +10,12 @@ const config = {
     cors: {
         allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'],
     },
+    aliveSignal: {
+        expirationTimeInSeconds: +(process.env.ALIVE_SIGNAL_EXPIRATION_TIME || 60 * 60 * 24),
+    },
+    hostService: {
+        expirationTimeInSeconds: +(process.env.HOST_SERVICE_EXPIRATION_TIME || 60 * 60 * 24),
+    },
 };
 
 export default config;

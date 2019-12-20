@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import IAliveSignal from './aliveSignal.interface';
+import config from '../config';
 
 // TODO: Remove document after specified (in config) amount of time.
 const aliveSignalSchema: mongoose.Schema = new mongoose.Schema(
@@ -20,11 +21,15 @@ const aliveSignalSchema: mongoose.Schema = new mongoose.Schema(
             type: Date,
             required: true,
         },
+        createdAt: {
+            type: Date,
+            default: new Date(),
+            expires: config.aliveSignal.expirationTimeInSeconds,
+        },
     },
     {
         versionKey: false,
         autoIndex: false,
-        timestamps: { createdAt: true, updatedAt: false },
         id: true,
         toJSON: {
             virtuals: true,

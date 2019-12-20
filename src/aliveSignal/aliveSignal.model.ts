@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import IAliveSignal from './aliveSignal.interface';
 
+// TODO: Remove document after specified (in config) amount of time.
 const aliveSignalSchema: mongoose.Schema = new mongoose.Schema(
     {
         serviceName: {
@@ -9,6 +10,14 @@ const aliveSignalSchema: mongoose.Schema = new mongoose.Schema(
         },
         hostname: {
             type: String,
+            required: true,
+        },
+        upTimeInSeconds: {
+            type: Number,
+            required: true,
+        },
+        aliveDate: {
+            type: Date,
             required: true,
         },
     },

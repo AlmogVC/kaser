@@ -1,0 +1,94 @@
+# Keep Alive Service - KASSEL
+
+KASSEL will get "keep alive" messages from different services and will decide if they are alive or not.
+
+## How it works
+
+An [AliveSignal Message](##alivesignal-message) will be sent to KASSEL via the body in an HTTP POST method.
+
+The message will contain the service's name.
+If the service name is not registered in KASSEL, KASSEL will register it and will save it as follows:
+
+```javascript
+{
+    name: aliveSignal.serviceName,
+    lastContactDate: new Date(),
+    currentAlivePeriodInSeconds: 0,
+    longestAlivePeriodInSeconds: 0,
+    longestDeadPeriodInSeconds: 0,
+}
+```
+
+Else, if the service already exists in KASSEL, it's values will update.
+
+Furthermore, the AliveSignal message will contain the hostname the message arrived from.
+This hostname will be saved and linked to the service in [ServiceHost](##servicehost)
+
+## AliveSignal Message
+
+```javascript
+{
+    hostname: String,
+    aliveDate: Date,
+    createdAt: Date,
+    serviceName: String,
+    upTimeInSeconds: Number,
+}
+```
+
+This structure will also save the createdAt date.
+The createdAt is also a TTL Index that expires when `config.aliveSignal.expirationTimeInSeconds` has passed.
+
+## Service
+
+```javascript
+{
+    name: String,
+    lastContactDate: Date,
+    currentAlivePeriodInSeconds: Number,
+    longestAlivePeriodInSeconds: Number,
+    longestDeadPeriodInSeconds: Number,
+}
+```
+
+**name** - The name of the service, this is a unique index, that means that only one document with this service's name can be created.
+
+**lastContactDate** - The last time an aliveSignal with the service's name has arrived to KASSEL
+
+**currentAlivePeriodInSeconds** - The time in seconds since the last time the service was [dead](###dead-service).
+
+**longestAlivePeriodInSeconds** - The longest time in seconds that the service was not [dead](###dead-service).
+Will only update if the currentAlivePeriodInSeconds is bigger than the current longestAlivePeriodInSeconds
+
+**longestDeadPeriodInSeconds** -
+The longest time in seconds the service was [dead](###dead-service).
+Will only update if the current [silent period](###silence) is bigger than the current longestDeadPeriodInSeconds
+
+## ServiceHost
+
+This structure will save a hostname(instance) to a specific service.
+Each service can have multiple hostnames linked to it, but an hostname can only be linked to one service.
+
+This structure will also save the lastAliveSignal from the specific hostname.
+The lastAliveSignal is also a TTL Index that expires when `config.serviceHost.expirationTimeInSeconds` has passed since the lastAliveSignal.
+
+```javascript
+{
+    id?: String,
+    hostname: String,
+    service: String,
+    createdAt?: Date,
+    lastAliveSignal?: Date,
+    upTimeInSeconds: Number,
+}
+```
+
+## Definitions
+
+### Dead Service
+
+A service counts as dead if it's [silence](###silence) time have passed the configurable value, maxSilenceTimeInSeconds.
+
+### Silence
+
+The period between the last time an AliveSignal message for the service has arrived and the time the next message will (maybe) arrive counts as silence time for the service.

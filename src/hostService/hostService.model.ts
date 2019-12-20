@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import IHostService from './hostService.interface';
+import config from '../config';
 
 const hostServiceSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -11,11 +12,16 @@ const hostServiceSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        lastAliveSignal: {
+            type: Date,
+            default: new Date(),
+            expires: config.hostService.expirationTimeInSeconds,
+        },
     },
     {
         versionKey: false,
         autoIndex: false,
-        timestamps: { createdAt: true, updatedAt: false },
+        timestamps: { createdAt: true },
         id: true,
         toJSON: {
             virtuals: true,

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import AliveSignalController from './aliveSignal.controller';
 
-const AliveRouter: Router = Router();
+const AliveSignalRouter: Router = Router();
 
-AliveRouter.post(`/`, AliveSignalController.create);
+AliveSignalRouter.post(`/`, AliveSignalController.create);
 
-export default AliveRouter;
+export default AliveSignalRouter;

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import AliveRouter from './alive/alive.router';
+import AliveSignalRouter from './aliveSignal/aliveSignal.router';
 
 const AppRouter: Router = Router();
 
-AppRouter.use(`/api/alive`, AliveRouter);
+AppRouter.use(`/api/aliveSignal`, AliveSignalRouter);
 
 export default AppRouter;

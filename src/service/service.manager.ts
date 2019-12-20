@@ -1,8 +1,7 @@
 import IAliveSignal from '../aliveSignal/aliveSignal.interface';
 import IService from './service.interface';
 import ServiceRepository from './service.repository';
-
-const MILLISECONDS_IN_SECONDS: number = 1000;
+import getTimeInSeconds from '../utils/utils';
 
 export default class ServiceManager {
     public static async update(aliveSignal: IAliveSignal) {
@@ -20,27 +19,19 @@ export default class ServiceManager {
 
     private static updateServiceTimes(service: IService, aliveSignal: IAliveSignal): IService {
         const currentAlivePeriodInSeconds: number = Number(aliveSignal.upTimeInSeconds);
-        let { longestAlivePeriodInSeconds, longestSilentPeriodInSeconds } = service;
 
-        const lastContactDateInSeconds: number = service.lastContactDate.getTime() / MILLISECONDS_IN_SECONDS;
-        const currentDateInSeconds: number = new Date().getTime() / MILLISECONDS_IN_SECONDS;
+        const lastContactDateInSeconds: number = getTimeInSeconds(service.lastContactDate);
+        const currentDateInSeconds: number = getTimeInSeconds(new Date());
+
         const currentSilentPeriodInSeconds: number =
             currentDateInSeconds - (lastContactDateInSeconds + currentAlivePeriodInSeconds);
-
-        if (currentAlivePeriodInSeconds > longestAlivePeriodInSeconds) {
-            longestAlivePeriodInSeconds = currentAlivePeriodInSeconds;
-        }
-
-        if (currentSilentPeriodInSeconds >= longestSilentPeriodInSeconds) {
-            longestSilentPeriodInSeconds = currentSilentPeriodInSeconds;
-        }
 
         return {
             name: service.name,
             lastContactDate: new Date(),
             currentAlivePeriodInSeconds,
-            longestAlivePeriodInSeconds,
-            longestSilentPeriodInSeconds,
+            longestAlivePeriodInSeconds: Math.max(currentAlivePeriodInSeconds, service.longestAlivePeriodInSeconds),
+            longestSilentPeriodInSeconds: Math.max(currentSilentPeriodInSeconds, service.longestSilentPeriodInSeconds),
         };
     }
 
@@ -48,8 +39,8 @@ export default class ServiceManager {
         return ServiceRepository.create({
             name: aliveSignal.serviceName,
             lastContactDate: new Date(),
-            currentAlivePeriodInSeconds: aliveSignal.upTimeInSeconds,
-            longestAlivePeriodInSeconds: aliveSignal.upTimeInSeconds,
+            currentAlivePeriodInSeconds: Number(aliveSignal.upTimeInSeconds),
+            longestAlivePeriodInSeconds: Number(aliveSignal.upTimeInSeconds),
             longestSilentPeriodInSeconds: 0,
         });
     }

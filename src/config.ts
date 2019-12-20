@@ -16,6 +16,9 @@ const config = {
     hostService: {
         expirationTimeInSeconds: +(process.env.HOST_SERVICE_EXPIRATION_TIME || 60 * 60 * 24),
     },
+    service: {
+        maxSilenceTimeInSeconds: +(process.env.SERVICE_MAX_SILENCE_TIME || 60),
+    },
 };
 
 export default config;

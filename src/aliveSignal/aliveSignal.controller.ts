@@ -7,6 +7,8 @@ export default class AliveSignalController {
         const aliveSignal: IAliveSignal = {
             hostname: req.body.hostname,
             serviceName: req.body.serviceName,
+            aliveDate: req.body.aliveDate,
+            upTimeInSeconds: req.body.upTimeInSeconds,
         };
 
         res.json(await AliveSignalManager.create(aliveSignal));

@@ -1,5 +1,8 @@
 export default interface IAliveSignal {
-    serviceName: string;
+    id?: string;
     hostname: string;
+    aliveDate: Date;
     createdAt?: Date;
+    serviceName: string;
+    upTimeInSeconds: number;
 }

@@ -2,6 +2,7 @@ import IAliveSignal from '../aliveSignal/aliveSignal.interface';
 import IService from './service.interface';
 import ServiceRepository from './service.repository';
 import getTimeInSeconds from '../utils/utils';
+import config from '../config';
 
 export default class ServiceManager {
     public static async update(aliveSignal: IAliveSignal) {
@@ -18,7 +19,7 @@ export default class ServiceManager {
     }
 
     private static updateServiceTimes(service: IService, aliveSignal: IAliveSignal): IService {
-        const currentAlivePeriodInSeconds: number = Number(aliveSignal.upTimeInSeconds);
+        const currentAlivePeriodInSeconds: number = ServiceManager.getCurrentAlivePeriod(service, aliveSignal);
 
         const lastContactDateInSeconds: number = getTimeInSeconds(service.lastContactDate);
         const currentDateInSeconds: number = getTimeInSeconds(new Date());
@@ -35,12 +36,24 @@ export default class ServiceManager {
         };
     }
 
+    private static getCurrentAlivePeriod(service: IService, aliveSignal: IAliveSignal): number {
+        const currentDateInSeconds: number = getTimeInSeconds(new Date());
+        const lastContactInSeconds: number = getTimeInSeconds(service.lastContactDate);
+
+        const wasServiceDead: boolean =
+            lastContactInSeconds + config.service.maxSilenceTimeInSeconds < currentDateInSeconds;
+
+        if (wasServiceDead) return 0;
+
+        return service.currentAlivePeriodInSeconds + (currentDateInSeconds - lastContactInSeconds);
+    }
+
     private static create(aliveSignal: IAliveSignal) {
         return ServiceRepository.create({
             name: aliveSignal.serviceName,
             lastContactDate: new Date(),
-            currentAlivePeriodInSeconds: Number(aliveSignal.upTimeInSeconds),
-            longestAlivePeriodInSeconds: Number(aliveSignal.upTimeInSeconds),
+            currentAlivePeriodInSeconds: 0,
+            longestAlivePeriodInSeconds: 0,
             longestSilentPeriodInSeconds: 0,
         });
     }

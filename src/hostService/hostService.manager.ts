@@ -12,7 +12,7 @@ export default class HostServiceManager {
             return HostServiceRepository.create(hostService);
         }
 
-        return existingHostService;
+        return HostServiceRepository.updateLastAliveDate(hostService.service, hostService.hostname);
     }
 
     public static getOne(service: string, hostname: string) {

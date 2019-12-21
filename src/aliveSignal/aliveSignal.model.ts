@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 import IAliveSignal from './aliveSignal.interface';
 import config from '../config';
 
-// TODO: Remove document after specified (in config) amount of time.
 const aliveSignalSchema: mongoose.Schema = new mongoose.Schema(
     {
         serviceName: {

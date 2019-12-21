@@ -20,24 +20,20 @@ export default class ServiceRepository {
         return ServiceModel.findOneAndUpdate({ name }, updatedService, { new: true }).lean();
     }
 
-    public static getAll() {
-        return ServiceModel.find({})
-            .lean()
-            .exec();
-    }
+    public static getMany(options?: { areAlive: boolean; silentSeconds: number }) {
+        let conditions = {};
 
-    public static getServicesByAliveState(areAlive: boolean, silentSeconds: number) {
-        const currentDate = new Date();
-        const oldestAllowedSilenceDate = new Date().setSeconds(+currentDate.getSeconds() - silentSeconds);
-        let condition: { [key: string]: number };
+        if (options && options.silentSeconds) {
+            const currentDate = new Date();
+            const oldestAllowedSilenceDate = new Date().setSeconds(+currentDate.getSeconds() - options.silentSeconds);
 
-        if (areAlive) {
-            condition = { $gt: oldestAllowedSilenceDate };
-        } else {
-            condition = { $lte: oldestAllowedSilenceDate };
+            const lastContactDate = options.areAlive
+                ? { $gt: oldestAllowedSilenceDate }
+                : { $lte: oldestAllowedSilenceDate };
+            conditions = { ...conditions, lastContactDate };
         }
 
-        return ServiceModel.find({ lastContactDate: condition })
+        return ServiceModel.find(conditions)
             .lean()
             .exec();
     }

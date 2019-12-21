@@ -18,18 +18,18 @@ export default class ServiceManager {
     }
 
     public static async getMany(options?: Partial<{ includeHosts: boolean; areAlive: boolean }>) {
-        let services: IService[];
+        let queryOptions;
 
         if (options && options.areAlive !== undefined) {
-            services = await ServiceRepository.getServicesByAliveState(
-                options.areAlive,
-                config.service.maxSilenceTimeInSeconds,
-            );
-        } else {
-            services = await ServiceRepository.getAll();
+            queryOptions = {
+                areAlive: options.areAlive,
+                silentSeconds: config.service.maxSilenceTimeInSeconds,
+            };
         }
 
-        if (options && options.includeHosts !== undefined) {
+        const services: IService[] = await ServiceRepository.getMany(queryOptions);
+
+        if (options && options.includeHosts === true) {
             const hosts: IServiceHost[] = await ServiceHostManager.getMany({});
 
             return ServiceManager.populateServiceHosts(services, hosts);

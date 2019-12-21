@@ -25,4 +25,20 @@ export default class ServiceRepository {
             .lean()
             .exec();
     }
+
+    public static getServicesByAliveState(areAlive: boolean, silentSeconds: number) {
+        const currentDate = new Date();
+        const oldestAllowedSilenceDate = new Date().setSeconds(+currentDate.getSeconds() - silentSeconds);
+        let condition: { [key: string]: number };
+
+        if (areAlive) {
+            condition = { $gt: oldestAllowedSilenceDate };
+        } else {
+            condition = { $lte: oldestAllowedSilenceDate };
+        }
+
+        return ServiceModel.find({ lastContactDate: condition })
+            .lean()
+            .exec();
+    }
 }

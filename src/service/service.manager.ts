@@ -17,10 +17,19 @@ export default class ServiceManager {
         return ServiceRepository.update(aliveSignal.serviceName, ServiceManager.updateServiceTimes(service));
     }
 
-    public static async getMany(options?: Partial<{ includeHosts: boolean }>) {
-        const services: IService[] = await ServiceRepository.getAll();
+    public static async getMany(options?: Partial<{ includeHosts: boolean; areAlive: boolean }>) {
+        let services: IService[];
 
-        if (options && options.includeHosts) {
+        if (options && options.areAlive !== undefined) {
+            services = await ServiceRepository.getServicesByAliveState(
+                options.areAlive,
+                config.service.maxSilenceTimeInSeconds,
+            );
+        } else {
+            services = await ServiceRepository.getAll();
+        }
+
+        if (options && options.includeHosts !== undefined) {
             const hosts: IServiceHost[] = await ServiceHostManager.getMany({});
 
             return ServiceManager.populateServiceHosts(services, hosts);

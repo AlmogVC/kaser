@@ -99,6 +99,8 @@ The period between the last time an AliveSignal message for the service has arri
 
 #### HTTP - POST `api/aliveSignal`
 
+#### RabbitMQ - route `'#.aliveSignal'`
+
 Will create a new aliveSignal for a specific service.
 
 -   Will create a new host for the service if the host does not exists and update it's `upTimeInSeconds`.

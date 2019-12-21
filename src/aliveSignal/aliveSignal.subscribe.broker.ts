@@ -1,7 +1,6 @@
 import * as rabbit from '../utils/rabbit';
 import config from '../config';
 import AliveSignalManager from './aliveSignal.manager';
-import IAliveSignal from './aliveSignal.interface';
 
 export default class AliveSignalSubscribeBroker {
     public static async subscribe() {

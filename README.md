@@ -129,3 +129,6 @@ Will return all the services and their state.
 query params:
 
 -   `includeHosts` - if set to `1` or `true` will return the hosts of each service, inside each service.
+-   `areAlive`:
+    -   if set to `1` or `true` will only return services that are considered alive.
+    -   if set to `0` or `false` will only return dead services.

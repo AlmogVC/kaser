@@ -35,6 +35,7 @@ function initEventHandlers() {
 async function setMongoConnection() {
     mongoose.set('useCreateIndex', true);
     mongoose.set('useFindAndModify', false);
+    mongoose.set('useUnifiedTopology', true);
 
     mongoose.connection.on('connecting', () => {
         console.log('[MongoDB] connecting...');

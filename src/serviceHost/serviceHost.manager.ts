@@ -18,4 +18,8 @@ export default class ServiceHostManager {
     public static getOne(service: string, hostname: string) {
         return ServiceHostRepository.getOne(service, hostname);
     }
+
+    public static getMany(serviceHostFilter: Partial<IServiceHost>) {
+        return ServiceHostRepository.getMany(serviceHostFilter);
+    }
 }

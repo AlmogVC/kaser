@@ -6,6 +6,7 @@ const config = {
     db: {
         connectionString: `mongodb://${process.env.DB_SERVERS || 'localhost:27017'}/${process.env.KEEP_ALIVE_DB_NAME ||
             'drop-box-keep-alive'}${process.env.DB_REPLICA_NAME ? `?replicaSet=${process.env.DB_REPLICA_NAME}` : ''}`,
+        autoIndex: process.env.MONGO_AUTO_INDEX === '1' || false,
     },
     cors: {
         allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'],

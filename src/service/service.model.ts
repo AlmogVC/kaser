@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import IService from './service.interface';
+import config from '../config';
 
 const serviceSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -7,6 +8,7 @@ const serviceSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            index: true,
             immutable: true,
         },
         lastContactDate: {
@@ -31,7 +33,7 @@ const serviceSchema: mongoose.Schema = new mongoose.Schema(
     },
     {
         versionKey: false,
-        autoIndex: false,
+        autoIndex: config.db.autoIndex,
         timestamps: { createdAt: true, updatedAt: true },
         id: true,
         toJSON: {
@@ -43,7 +45,6 @@ const serviceSchema: mongoose.Schema = new mongoose.Schema(
     },
 );
 
-serviceSchema.index({ name: 1 });
 const ServiceModel = mongoose.model<IService & mongoose.Document>('Service', serviceSchema);
 
 export default ServiceModel;

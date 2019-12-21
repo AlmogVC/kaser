@@ -24,7 +24,7 @@ const serviceHostSchema: mongoose.Schema = new mongoose.Schema(
     },
     {
         versionKey: false,
-        autoIndex: false,
+        autoIndex: config.db.autoIndex,
         timestamps: { createdAt: true },
         id: true,
         toJSON: {

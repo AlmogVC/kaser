@@ -3,7 +3,9 @@ import ServiceModel from './service.model';
 
 export default class ServiceRepository {
     public static getOne(serviceFilter: Partial<IService>) {
-        return ServiceModel.findOne(serviceFilter).exec();
+        return ServiceModel.findOne(serviceFilter)
+            .lean()
+            .exec();
     }
 
     public static create(service: IService) {
@@ -15,6 +17,12 @@ export default class ServiceRepository {
         delete updatedService.createdAt;
         delete updatedService.id;
 
-        return ServiceModel.findOneAndUpdate({ name }, updatedService, { new: true });
+        return ServiceModel.findOneAndUpdate({ name }, updatedService, { new: true }).lean();
+    }
+
+    public static getAll() {
+        return ServiceModel.find({})
+            .lean()
+            .exec();
     }
 }

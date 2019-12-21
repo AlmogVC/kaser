@@ -3,6 +3,8 @@ import IService from './service.interface';
 import ServiceRepository from './service.repository';
 import getTimeInSeconds from '../utils/utils';
 import config from '../config';
+import ServiceHostManager from '../serviceHost/serviceHost.manager';
+import IServiceHost from '../serviceHost/serviceHost.interface';
 
 export default class ServiceManager {
     public static async update(aliveSignal: IAliveSignal) {
@@ -13,6 +15,35 @@ export default class ServiceManager {
         }
 
         return ServiceRepository.update(aliveSignal.serviceName, ServiceManager.updateServiceTimes(service));
+    }
+
+    public static async getMany(options?: Partial<{ includeHosts: boolean }>) {
+        const services: IService[] = await ServiceRepository.getAll();
+
+        if (options && options.includeHosts) {
+            const hosts: IServiceHost[] = await ServiceHostManager.getMany({});
+
+            return ServiceManager.populateServiceHosts(services, hosts);
+        }
+
+        return services;
+    }
+
+    private static populateServiceHosts(services: IService[], hosts: IServiceHost[]) {
+        const populatedServices: (IService & { hosts?: Omit<IServiceHost, 'service'>[] })[] = services;
+        const serviceDictionary: { [key: string]: Omit<IServiceHost, 'service'>[] } = {};
+
+        hosts.forEach(host => {
+            const { service, ...hostWithoutServiceName } = host;
+
+            if (!serviceDictionary[service]) serviceDictionary[service] = [];
+
+            serviceDictionary[service].push(hostWithoutServiceName);
+        });
+
+        return populatedServices.map(service => {
+            return { ...service, hosts: serviceDictionary[service.name] };
+        });
     }
 
     private static updateServiceTimes(service: IService): IService {

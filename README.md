@@ -92,3 +92,40 @@ A service counts as dead if it's [silence](###silence) time have passed the conf
 ### Silence
 
 The period between the last time an AliveSignal message for the service has arrived and the time the next message will (maybe) arrive counts as silence time for the service.
+
+## API
+
+### Alive Signal
+
+#### HTTP - POST `api/aliveSignal`
+
+Will create a new aliveSignal for a specific service.
+
+-   Will create a new host for the service if the host does not exists and update it's `upTimeInSeconds`.
+-   Will update the following properties for the service:
+    -   `createdAt` - if this is the **first time** a message from the service was received, the current date will be saved.
+    -   `lastContactDate` - update to current date.
+    -   `longestDeadPeriodInSeconds` - If the service was currently **dead** and passed the last value the new time will be saved.
+    -   `longestAlivePeriodInSeconds` - If the service was currently **alive** and passed the last value the new time will be saved.
+    -   `currentAlivePeriodInSeconds` - if the service was currently **alive**, update the value to the current time it is alive
+
+body
+
+```javascript
+{
+    hostname: String,
+    serviceName: String,
+    aliveDate: Date,
+    upTimeInSeconds: Number,
+}
+```
+
+### Service
+
+#### HTTP - GET `api/service`
+
+Will return all the services and their state.
+
+query params:
+
+-   `includeHosts` - if set to `1` or `true` will return the hosts of each service, inside each service.

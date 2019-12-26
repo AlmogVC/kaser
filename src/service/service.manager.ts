@@ -11,7 +11,7 @@ export default class ServiceManager {
         const service: IService | null = await ServiceRepository.getOne({ name: aliveSignal.serviceName });
 
         if (!service) {
-            return ServiceManager.create(aliveSignal);
+            return ServiceManager.create(aliveSignal.serviceName);
         }
 
         return ServiceRepository.update(aliveSignal.serviceName, ServiceManager.updateServiceTimes(service));
@@ -94,9 +94,9 @@ export default class ServiceManager {
         return service.currentAlivePeriodInSeconds + (currentDateInSeconds - lastContactDateInSeconds);
     }
 
-    private static create(aliveSignal: IAliveSignal) {
+    private static create(name: string) {
         return ServiceRepository.create({
-            name: aliveSignal.serviceName,
+            name,
             lastContactDate: new Date(),
             currentAlivePeriodInSeconds: 0,
             longestAlivePeriodInSeconds: 0,

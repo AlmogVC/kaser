@@ -14,13 +14,17 @@ initEventHandlers();
 function initEventHandlers() {
     process.on('uncaughtException', error => {
         console.error('Unhandled Exception', error.stack);
-        rabbit.closeConnection();
+
+        if (config.rabbitMQ.active) rabbit.closeConnection();
+
         process.exit(1);
     });
 
     process.on('unhandledRejection', error => {
         console.error('Unhandled Rejection', error);
-        rabbit.closeConnection();
+
+        if (config.rabbitMQ.active) rabbit.closeConnection();
+
         process.exit(1);
     });
 
@@ -29,7 +33,9 @@ function initEventHandlers() {
             console.log('User Termination');
 
             await mongoose.disconnect();
-            rabbit.closeConnection();
+
+            if (config.rabbitMQ.active) rabbit.closeConnection();
+
             process.exit(0);
         } catch (error) {
             console.error('Failed to close MongoDB connection before server shutdown', error);
@@ -65,8 +71,10 @@ async function setMongoConnection() {
         console.log('[MongoDB] reconnected');
     });
 
-    await rabbit.connect();
-    await AliveSignalSubscribeBroker.subscribe();
+    if (config.rabbitMQ.active) {
+        await rabbit.connect();
+        await AliveSignalSubscribeBroker.subscribe();
+    }
 
     return mongoose.connect(config.db.connectionString, { useNewUrlParser: true });
 }

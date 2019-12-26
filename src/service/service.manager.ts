@@ -59,15 +59,14 @@ export default class ServiceManager {
         const currentDateInSeconds: number = getTimeInSeconds(new Date());
         const currentAlivePeriodInSeconds: number = ServiceManager.getCurrentAlivePeriod(service, currentDateInSeconds);
 
-        const currentSilentPeriodInSeconds: number = ServiceManager.getCurrentSilentPeriod(
-            service.lastContactDate,
-            currentAlivePeriodInSeconds,
-            currentDateInSeconds,
-        );
-
         let { longestDeadPeriodInSeconds } = service;
 
         if (currentAlivePeriodInSeconds === 0) {
+            const currentSilentPeriodInSeconds: number = ServiceManager.getCurrentSilentPeriod(
+                service.lastContactDate,
+                currentDateInSeconds,
+            );
+
             longestDeadPeriodInSeconds = Math.max(currentSilentPeriodInSeconds, longestDeadPeriodInSeconds);
         }
 
@@ -80,12 +79,8 @@ export default class ServiceManager {
         };
     }
 
-    private static getCurrentSilentPeriod(
-        lastContactDate: Date,
-        currentAlivePeriodInSeconds: number,
-        currentDateInSeconds: number,
-    ) {
-        return currentDateInSeconds - (getTimeInSeconds(lastContactDate) + currentAlivePeriodInSeconds);
+    private static getCurrentSilentPeriod(lastContactDate: Date, currentDateInSeconds: number) {
+        return currentDateInSeconds - getTimeInSeconds(lastContactDate);
     }
 
     private static getCurrentAlivePeriod(service: IService, currentDateInSeconds: number): number {

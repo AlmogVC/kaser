@@ -1,4 +1,4 @@
-# Keep Alive Service - KASSEL
+# Keep Alive SErvice Registry - KASER
 
 KASSEL will get "keep alive" messages from different services and will decide if they are alive or not.
 

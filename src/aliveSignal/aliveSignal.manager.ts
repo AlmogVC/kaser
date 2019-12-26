@@ -5,7 +5,7 @@ import ServiceHostManager from '../serviceHost/serviceHost.manager';
 
 export default class AliveSignalManager {
     public static async create(aliveSignal: IAliveSignal) {
-        return Promise.all([
+        const result = await Promise.all([
             AliveSignalRepository.create(aliveSignal),
             ServiceHostManager.create({
                 service: aliveSignal.serviceName,
@@ -14,5 +14,11 @@ export default class AliveSignalManager {
             }),
             ServiceManager.update(aliveSignal),
         ]);
+
+        return {
+            aliveSignal: result[0],
+            serviceHost: result[1],
+            service: result[2],
+        };
     }
 }

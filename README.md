@@ -134,3 +134,26 @@ query params:
 -   `areAlive`:
     -   if set to `1` or `true` will only return services that are considered alive.
     -   if set to `0` or `false` will only return dead services.
+
+### Config
+
+#### HTTP - GET `api/config`
+
+Will return the config of the service.
+
+Return value:
+
+```javascript
+{
+    rabbitMQ: {
+        isActive: Boolean,
+        exchange: String,
+        exchangeType: String,
+        host: String,
+        port: Number
+    },
+    service: {
+        maxSilenceTimeInSeconds: Number,
+    }
+}
+```

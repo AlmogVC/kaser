@@ -8,7 +8,7 @@ export default class AliveSignalSubscribeBroker {
             config.rabbitMQ.exchange,
             config.rabbitMQ.exchangeType,
             config.rabbitMQ.queueName,
-            '#.aliveSignal',
+            config.rabbitMQ.pattern,
             async messageContent => {
                 const { hostname, serviceName, aliveDate, upTimeInSeconds } = messageContent;
 

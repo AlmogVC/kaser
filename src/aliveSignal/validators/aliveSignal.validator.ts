@@ -29,7 +29,8 @@ export function validateAliveDate(aliveDate: string) {
 }
 
 export function validateUpTimeInSeconds(upTimeInSeconds: number) {
-    const condition = upTimeInSeconds && !Number.isNaN(upTimeInSeconds) && upTimeInSeconds >= 0;
+    const condition =
+        (upTimeInSeconds || upTimeInSeconds === 0) && !Number.isNaN(upTimeInSeconds) && Number(upTimeInSeconds) >= 0;
     return validate(condition, new UpTimeInSecondsInvalidError());
 }
 

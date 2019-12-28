@@ -16,7 +16,7 @@ const config = {
         port: +(process.env.RMQ_PORT || 5672),
         password: process.env.RMQ_PASSWORD || 'guest',
         username: process.env.RMQ_USERNAME || 'guest',
-        exchange: process.env.RMQ_EXCHANGE || 'drop-box-exchange',
+        exchange: process.env.RMQ_EXCHANGE || 'kaser-exchange',
         exchangeType: process.env.RMQ_EXCHANGE_TYPE || 'topic',
         queueName: process.env.RMQ_QUEUE_NAME || 'alive-signal-queue',
         pattern: process.env.RMQ_PATTERN || '#.aliveSignal',

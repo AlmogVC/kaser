@@ -3,6 +3,7 @@ import * as http from 'http';
 
 import config from './config';
 import AppRouter from './router';
+import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/errorHandler';
 
 import bodyParser = require('body-parser');
 
@@ -48,5 +49,9 @@ export default class Server {
         this.app.use(bodyParser.urlencoded({ extended: true }));
     }
 
-    private initializeErrorHandler() {}
+    private initializeErrorHandler() {
+        this.app.use(userErrorHandler);
+        this.app.use(serverErrorHandler);
+        this.app.use(unknownErrorHandler);
+    }
 }

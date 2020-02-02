@@ -20,7 +20,7 @@ const config = {
         exchangeType: process.env.RMQ_EXCHANGE_TYPE || 'topic',
         queueName: process.env.RMQ_QUEUE_NAME || 'alive-signal-queue',
         pattern: process.env.RMQ_PATTERN || '#.aliveSignal',
-        active: process.env.RMQ_ACTIVE === '1' || true,
+        active: process.env.RMQ_ACTIVE === '1' || false,
     },
     aliveSignal: {
         expirationTimeInSeconds: +(process.env.ALIVE_SIGNAL_EXPIRATION_TIME || 60 * 60 * 24),

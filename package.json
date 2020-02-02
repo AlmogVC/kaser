@@ -4,6 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "build": "tsc --build tscofing.json",
+        "start": "node ./dist/index.js",
         "dev": "ts-node ./src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "release": "standard-version"

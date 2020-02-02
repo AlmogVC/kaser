@@ -24,13 +24,13 @@ export function validateServiceName(serviceName: string) {
 }
 
 export function validateAliveDate(aliveDate: string) {
-    const condition = aliveDate && !Number.isNaN(Date.parse(aliveDate));
+    const condition = !!aliveDate && !Number.isNaN(Date.parse(aliveDate));
     return validate(condition, new AliveDateInvalidError());
 }
 
 export function validateUpTimeInSeconds(upTimeInSeconds: number) {
     const condition =
-        (upTimeInSeconds || upTimeInSeconds === 0) && !Number.isNaN(upTimeInSeconds) && Number(upTimeInSeconds) >= 0;
+        (!!upTimeInSeconds || upTimeInSeconds === 0) && !Number.isNaN(upTimeInSeconds) && Number(upTimeInSeconds) >= 0;
     return validate(condition, new UpTimeInSecondsInvalidError());
 }
 
@@ -40,5 +40,5 @@ function validate(condition: boolean, error: Error) {
 }
 
 function isStringValid(str: string, minLength: number, maxLength: number) {
-    return str && typeof str === 'string' && str.length >= minLength && str.length <= maxLength;
+    return !!str && typeof str === 'string' && str.length >= minLength && str.length <= maxLength;
 }

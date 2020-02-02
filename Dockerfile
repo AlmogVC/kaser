@@ -11,7 +11,7 @@ COPY --from=BASE /app/package*.json ./
 RUN npm install --silent --progress=false --production
 COPY --from=BASE /app/dist/ ./dist
 
-FROM astefanutti/scratch-node:12 as PROD
+FROM node:12-alpine as PROD
 COPY --from=BUILD /app /
 EXPOSE 3000
-ENTRYPOINT [ "./node", "dist/index.js" ]
+ENTRYPOINT [ "node", "dist/index.js" ]

@@ -4,7 +4,7 @@ const config = {
         name: process.env.SERVICE_NAME || 'keep-alive',
     },
     db: {
-        connectionString: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost:27017',
+        connectionString: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost:27017/kaser',
         autoIndex: process.env.MONGO_AUTO_INDEX === '1' || false,
     },
     cors: {

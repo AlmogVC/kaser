@@ -44,10 +44,6 @@ function initEventHandlers() {
 }
 
 async function setMongoConnection() {
-    mongoose.set('useCreateIndex', true);
-    mongoose.set('useFindAndModify', false);
-    mongoose.set('useUnifiedTopology', true);
-
     mongoose.connection.on('connecting', () => {
         console.log('[MongoDB] connecting...');
     });
@@ -76,5 +72,10 @@ async function setMongoConnection() {
         await AliveSignalSubscribeBroker.subscribe();
     }
 
-    return mongoose.connect(config.db.connectionString, { useNewUrlParser: true });
+    return mongoose.connect(config.db.connectionString, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true,
+    });
 }

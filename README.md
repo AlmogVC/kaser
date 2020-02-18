@@ -4,10 +4,10 @@ KASER will get "keep alive" messages from different services and will decide if 
 
 ## How it works
 
-An [AliveSignal Message](##alivesignal-message) will be sent to KASSEL via the body in an HTTP POST method.
+An [AliveSignal Message](##alivesignal-message) will be sent to KASER via the body in an HTTP POST method.
 
 The message will contain the service's name.
-If the service name is not registered in KASSEL, KASSEL will register it and will save it as follows:
+If the service name is not registered in KASER, KASER will register it and will save it as follows:
 
 ```javascript
 {
@@ -19,7 +19,7 @@ If the service name is not registered in KASSEL, KASSEL will register it and wil
 }
 ```
 
-Else, if the service already exists in KASSEL, it's values will update.
+Else, if the service already exists in KASER, it's values will update.
 
 Furthermore, the AliveSignal message will contain the hostname the message arrived from.
 This hostname will be saved and linked to the service in [ServiceHost](##servicehost)
@@ -53,7 +53,7 @@ The createdAt is also a TTL Index that expires when `config.aliveSignal.expirati
 
 **name** - The name of the service, this is a unique index, that means that only one document with this service's name can be created.
 
-**lastContactDate** - The last time an aliveSignal with the service's name has arrived to KASSEL
+**lastContactDate** - The last time an aliveSignal with the service's name has arrived to KASER
 
 **currentAlivePeriodInSeconds** - The time in seconds since the last time the service was [dead](###dead-service).
 

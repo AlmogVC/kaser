@@ -4,8 +4,7 @@ const config = {
         name: process.env.SERVICE_NAME || 'keep-alive',
     },
     db: {
-        connectionString: `mongodb://${process.env.DB_SERVERS || 'localhost:27017'}/${process.env.KEEP_ALIVE_DB_NAME ||
-            'drop-box-keep-alive'}${process.env.DB_REPLICA_NAME ? `?replicaSet=${process.env.DB_REPLICA_NAME}` : ''}`,
+        connectionString: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost:27017',
         autoIndex: process.env.MONGO_AUTO_INDEX === '1' || false,
     },
     cors: {
